@@ -189,7 +189,7 @@ const AnimationOverlay = React.memo(
       >
         <div style={{ minWidth: '150px', whiteSpace: 'nowrap' }}>
           <TextShimmer key={`shimmer-${cellId}`} duration={1.5} spread={2}>
-            Generating answer...
+            Generating output...
           </TextShimmer>
         </div>
         <div
