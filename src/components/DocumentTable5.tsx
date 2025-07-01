@@ -1,14 +1,15 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
+import { Loader2 } from 'lucide-react';
+import { TextLoop } from '../../components/motion-primitives/text-loop';
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { Loader2 } from 'lucide-react';
-import { TextLoop } from '../../components/motion-primitives/text-loop';
 
 // SVG Icon Components
 const PdfHarveyIcon = ({ className }: { className?: string }) => (
@@ -186,109 +187,43 @@ const data: Document[] = [
     assignmentProvisionSummary:
       'Assignment requires consent, with exception...',
   },
-  {
-    id: 11,
-    selected: false,
-    fileName: '2-23-20250207T001925Z-001.pdf',
-    agreementParties: 'Seattle Genetics, Inc. and SAFC, an operating...',
-    forceMajeureClause: 'Disputed',
-    assignmentProvisionSummary:
-      'Assignment requires consent, with exception...',
-  },
-  {
-    id: 12,
-    selected: false,
-    fileName: 'Plaintiff_Exhibit_List.pdf',
-    agreementParties: 'Crown Electrokinetics Corp., Brandywine O...',
-    forceMajeureClause: 'Not Disputed',
-    assignmentProvisionSummary:
-      "Company needs Aron's consent to assign; Aro...",
-  },
-  {
-    id: 13,
-    selected: false,
-    fileName: 'Legal_Memo_IP_Dispute.pdf',
-    agreementParties: 'Dynavax Technologies Corporation, Nitto Denk...',
-    forceMajeureClause: 'Not Disputed',
-    assignmentProvisionSummary:
-      'Company needs Arons consent to assign; Aron...',
-  },
-  {
-    id: 14,
-    selected: false,
-    fileName: 'Contract_Translation_French.pdf',
-    agreementParties: 'Synacor, Inc. and Verizon Corporate Services...',
-    forceMajeureClause: 'Disputed',
-    assignmentProvisionSummary: 'Assignment requires prior written consent.',
-  },
-  {
-    id: 15,
-    selected: false,
-    fileName: 'NDA_Tracked_Changes.pdf',
-    agreementParties: 'General Electric Company (GE) through GE Po...',
-    forceMajeureClause: 'Disputed',
-    assignmentProvisionSummary: 'Binding on successors and permitted assigns',
-  },
-  {
-    id: 16,
-    selected: false,
-    fileName: 'Case_Brief_Johnson_v_Smith.pdf',
-    agreementParties: 'No information',
-    forceMajeureClause: 'Somewhat Disputed',
-    assignmentProvisionSummary: 'No assignment without prior written approval.',
-  },
-  {
-    id: 17,
-    selected: false,
-    fileName: 'LLC_Operating_Agreement.pdf',
-    agreementParties: 'J. Aron & Company LLC ("Aron"), Lion Oil Com...',
-    forceMajeureClause: 'Somewhat Disputed',
-    assignmentProvisionSummary: 'No assignment without prior written approval.',
-  },
-  {
-    id: 18,
-    selected: false,
-    fileName: 'AT&T MobiTV Developer License Agr...',
-    agreementParties: 'J. Aron & Company LLC, Alon Refining Krotz S...',
-    forceMajeureClause: 'Disputed',
-    assignmentProvisionSummary:
-      'Binding on parties and successors, assignable...',
-  },
-  {
-    id: 19,
-    selected: false,
-    fileName: 'MSG License Agreement.pdf',
-    agreementParties: 'United Launch Alliance, L.L.C. (ULA), The Boei...',
-    forceMajeureClause: 'Disputed',
-    assignmentProvisionSummary:
-      'Shipper can assign rights and obligations with...',
-  },
-  {
-    id: 20,
-    selected: false,
-    fileName: 'Rivian_SClub-Supply-Agreement.pdf',
-    agreementParties: 'Agilent Technologies, Inc. and Ophthtotech Cor...',
-    forceMajeureClause: 'Somewhat Disputed',
-    assignmentProvisionSummary:
-      'Purchaser can assign to Affiliates; Manufacture...',
-  },
-  {
-    id: 21,
-    selected: false,
-    fileName: 'sec.gov_archives_edgar_data_7823...',
-    agreementParties: 'Gramercy Alumina LLC (Seller), Gramercy Alu...',
-    forceMajeureClause: 'Somewhat Disputed',
-    assignmentProvisionSummary: 'Assignment requires prior written consent.',
-  },
-  {
-    id: 22,
-    selected: false,
-    fileName: 'sec.gov_archives_edgar_data_12322...',
-    agreementParties: 'Textron Inc., Scott C. Donnelly on behalf of his I...',
-    forceMajeureClause: 'Not Disputed',
-    assignmentProvisionSummary:
-      'Assignment requires consent, except to Affiliat...',
-  },
+];
+
+type ActiveCell = {
+  rowIndex: number;
+  columnId: string;
+};
+
+// Active cell movement pattern - cycles through different cells systematically
+const activeCellSequence: ActiveCell[] = [
+  // First pass: File names
+  { rowIndex: 0, columnId: 'fileName' },
+  { rowIndex: 1, columnId: 'fileName' },
+  { rowIndex: 2, columnId: 'fileName' },
+  { rowIndex: 3, columnId: 'fileName' },
+  // Agreement parties
+  { rowIndex: 0, columnId: 'agreementParties' },
+  { rowIndex: 4, columnId: 'agreementParties' },
+  { rowIndex: 1, columnId: 'agreementParties' },
+  { rowIndex: 7, columnId: 'agreementParties' },
+  // Force majeure clauses
+  { rowIndex: 2, columnId: 'forceMajeureClause' },
+  { rowIndex: 5, columnId: 'forceMajeureClause' },
+  { rowIndex: 8, columnId: 'forceMajeureClause' },
+  { rowIndex: 0, columnId: 'forceMajeureClause' },
+  // Assignment provisions
+  { rowIndex: 3, columnId: 'assignmentProvisionSummary' },
+  { rowIndex: 6, columnId: 'assignmentProvisionSummary' },
+  { rowIndex: 9, columnId: 'assignmentProvisionSummary' },
+  { rowIndex: 1, columnId: 'assignmentProvisionSummary' },
+  // More complex pattern covering remaining rows
+  { rowIndex: 4, columnId: 'agreementParties' },
+  { rowIndex: 7, columnId: 'fileName' },
+  { rowIndex: 2, columnId: 'agreementParties' },
+  { rowIndex: 9, columnId: 'forceMajeureClause' },
+  { rowIndex: 5, columnId: 'assignmentProvisionSummary' },
+  { rowIndex: 8, columnId: 'fileName' },
+  { rowIndex: 6, columnId: 'forceMajeureClause' },
 ];
 
 const columnHelper = createColumnHelper<Document>();
@@ -372,11 +307,11 @@ const columns = [
   }),
 ];
 
-export default function DocumentTable4() {
-  const [scrollPosition, setScrollPosition] = useState(0);
-  const tableContainerRef = useRef<HTMLDivElement>(null);
-  const rowHeight = 32; // Height of each table row in pixels
-  const maxVisibleRows = 4; // Number of rows to show at once
+export default function DocumentTable5() {
+  const [activeCell, setActiveCell] = useState<ActiveCell | null>(null);
+  const [currentStep, setCurrentStep] = useState(0);
+
+  const steps = ['1/3', '2/3', '3/3'];
 
   const table = useReactTable({
     data,
@@ -384,113 +319,166 @@ export default function DocumentTable4() {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const totalRows = table.getRowModel().rows.length;
 
-  // Handle row scrolling
+
+
+
   useEffect(() => {
-    const scrollTimer = setInterval(() => {
-      setScrollPosition(prevPosition => {
-        const maxScroll = (totalRows - maxVisibleRows) * rowHeight;
-        return (prevPosition + rowHeight) % (maxScroll + rowHeight);
-      });
-    }, 1800); // Advance every 1.8 seconds
+    let currentIndex = 0;
+    
+    // Start active cell animation immediately
+    const cellTimer = setInterval(() => {
+      setActiveCell(activeCellSequence[currentIndex]);
+      currentIndex = (currentIndex + 1) % activeCellSequence.length;
+    }, 800); // Change active cell every 800ms
 
-    return () => clearInterval(scrollTimer);
-  }, [totalRows, rowHeight, maxVisibleRows]);
+    return () => clearInterval(cellTimer);
+  }, []);
+
+  useEffect(() => {
+    // Step counter animation - sync with TextLoop (4 seconds)
+    const stepTimer = setInterval(() => {
+      setCurrentStep(prev => (prev + 1) % steps.length);
+    }, 4000);
+
+    return () => clearInterval(stepTimer);
+  }, [steps.length]);
+
+
+
+  const isCellActive = (rowIndex: number, columnId: string) => {
+    return (
+      activeCell?.rowIndex === rowIndex && activeCell?.columnId === columnId
+    );
+  };
 
   return (
     <div
-      className='flex flex-col items-center justify-center space-y-6'
+      className='flex items-center justify-center relative'
       style={{ minHeight: '100vh' }}
     >
-      {/* Status line with spinner */}
-      <div className='flex items-center space-x-2 text-gray-600 font-medium'>
-        <Loader2 className='h-4 w-4 animate-spin' />
-        <TextLoop
-          className='text-gray-600 font-medium text-sm'
-          interval={3} // Cycle through status every ~2.4 rows (4.32 seconds)
-        >
-          <span>Understanding review grid...</span>
-          <span>Identifying key terms...</span>
-          <span>Analyzing documents...</span>
-        </TextLoop>
-      </div>
+      {/* Main Table Container */}
+      <div className='flex flex-col'>
+        <table className='border-separate border-spacing-0 rounded-[8px] border border-[#ECEBE9]'>
+          <thead>
+            {table.getHeaderGroups().map(headerGroup => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map(header => (
+                  <th
+                    key={header.id}
+                    className={`px-3 h-8 text-left font-medium ${
+                      header.id === 'select' ? 'w-[48px]' : ''
+                    } ${header.id === 'forceMajeureClause' ? 'w-[250px]' : ''} ${header.id === 'agreementParties' ? 'w-[280px]' : ''} ${header.id === 'assignmentProvisionSummary' ? 'w-[280px]' : ''} ${header.index !== 0 ? 'border-l border-[#ECEBE9]' : ''} border-b border-[#ECEBE9]`}
+                    style={{
+                      fontSize: '12px',
+                      lineHeight: '16px',
+                      color: '#514E48',
+                    }}
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {table
+              .getRowModel()
+              .rows.map(row => (
+                <tr key={row.id}>
+                  {row.getVisibleCells().map(cell => {
+                    const cellPadding =
+                      cell.column.id === 'fileName' ? 'px-1' : 'px-3';
+                    const isActive = isCellActive(row.index, cell.column.id);
 
-      {/* Table container with limited height and scrolling */}
-      <div className='relative'>
-        <div
-          ref={tableContainerRef}
-          className='overflow-hidden'
-          style={{
-            height: `${maxVisibleRows * rowHeight}px`, // No extra height needed without headers
-            width: '860px', // Clip the table to show overflow effect
-          }}
-        >
-          <div
-            style={{
-              transform: `translateY(${-scrollPosition}px)`,
-              transition: 'transform 0.6s ease-out',
-            }}
-          >
-            <table className='border-separate border-spacing-0 rounded-[8px] border border-[#ECEBE9]'>
-              <tbody>
-                {table.getRowModel().rows.map((row, rowIndex) => (
-                  <tr key={row.id}>
-                    {row.getVisibleCells().map(cell => {
-                      const cellPadding =
-                        cell.column.id === 'fileName' ? 'px-1' : 'px-3';
-                      return (
+                                          return (
                         <td
                           key={cell.id}
-                          className={`${cellPadding} h-8 ${cell.column.id === 'select' ? 'w-[48px]' : ''} ${cell.column.id === 'forceMajeureClause' ? 'w-[250px]' : ''} ${cell.column.id === 'agreementParties' ? 'w-[280px]' : ''} ${cell.column.id === 'assignmentProvisionSummary' ? 'w-[280px]' : ''} ${cell.column.id !== table.getAllColumns()[0].id ? 'border-l border-[#ECEBE9]' : ''} ${rowIndex !== table.getRowModel().rows.length - 1 ? 'border-b border-[#ECEBE9]' : ''}`}
-                          style={{ fontSize: '12px', lineHeight: '16px' }}
+                          className={`${cellPadding} h-8 relative transition-all duration-300 ${cell.column.id === 'forceMajeureClause' ? 'w-[250px]' : ''} ${cell.column.id === 'agreementParties' ? 'w-[280px]' : ''} ${cell.column.id === 'assignmentProvisionSummary' ? 'w-[280px]' : ''} ${cell.column.id !== table.getAllColumns()[0].id ? 'border-l border-[#ECEBE9]' : ''} ${row.index !== table.getRowModel().rows.length - 1 ? 'border-b border-[#ECEBE9]' : ''}`}
+                          style={{
+                            fontSize: '12px',
+                            lineHeight: '16px',
+                          }}
                         >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      {/* Active cell highlight */}
+                      {isActive && (
+                        <>
+                          {/* Static border with purple color */}
+                          <div className="absolute inset-0 rounded-tl-md rounded-bl-md rounded-br-md border-2 pointer-events-none z-10" style={{ borderColor: '#8D76BC' }} />
+                          {/* Subtle background glow */}
+                          <div className="absolute inset-0 rounded-tl-md rounded-bl-md rounded-br-md pointer-events-none z-0" style={{ backgroundColor: '#F0EBFA' }} />
+                          {/* Harvey tag */}
+                          <div className="absolute -top-[21px] -right-[0px] inline-flex items-center gap-1 rounded-tl-full rounded-tr-full rounded-bl-full py-0.5 pl-0.5 pr-2 pointer-events-none z-20" style={{ backgroundColor: '#8D76BC' }}>
+                            <Image 
+                              src="/harvey_avatar.png" 
+                              alt="Harvey"
+                              width={14}
+                              height={14}
+                              className="rounded-full flex-shrink-0"
+                            />
+                            <span className="text-[12px]" style={{ color: 'white' }}>Harvey</span>
+                          </div>
+                        </>
+                      )}
+                      
+                      <div className="relative z-20">
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </div>
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        
+        {/* Step Status - Below Table */}
+        <div className='w-full border border-[#ECEBE9] rounded-[8px] px-4 py-3 bg-white mt-3'>
+          <div className='flex items-center justify-between text-gray-600 font-medium text-sm'>
+            <div className='flex items-center space-x-2'>
+              <Loader2 className='h-4 w-4 animate-spin' />
+              <TextLoop
+                className='text-gray-600 font-medium text-sm'
+                interval={4}
+              >
+                <span>Harvey is chunking and embedding the documents</span>
+                <span>Harvey is identifying key contract terms</span>
+                <span>Harvey is extracting the chronology of key events</span>
+              </TextLoop>
+            </div>
+            <span className='text-xs' style={{ color: '#706D66' }}>
+              {steps[currentStep]}
+            </span>
           </div>
         </div>
-
-        {/* Top/bottom gradient overlay for clipping effect */}
-        <div
-          className='absolute inset-0 pointer-events-none'
-          style={{
-            background:
-              'linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.3) 15%, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0) 70%, rgba(255, 255, 255, 0.3) 85%, rgba(255, 255, 255, 0.95) 100%)',
-            zIndex: 20,
-          }}
-        />
-
-        {/* Left-side gradient overlay to suggest more columns */}
-        <div
-          className='absolute top-0 left-0 bottom-0 pointer-events-none'
-          style={{
-            width: '80px',
-            background:
-              'linear-gradient(to right, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 25%, rgba(255, 255, 255, 0.4) 60%, rgba(255, 255, 255, 0) 100%)',
-            zIndex: 25,
-          }}
-        />
-
-        {/* Right-side gradient overlay to suggest more columns */}
-        <div
-          className='absolute top-0 right-0 bottom-0 pointer-events-none'
-          style={{
-            width: '80px',
-            background:
-              'linear-gradient(to left, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 25%, rgba(255, 255, 255, 0.4) 60%, rgba(255, 255, 255, 0) 100%)',
-            zIndex: 25,
-          }}
-        />
       </div>
+
+
+
+      {/* Custom CSS for scan line animation */}
+      <style jsx>{`
+        @keyframes scan {
+          0% {
+            transform: translateY(-100%);
+            opacity: 0;
+          }
+          50% {
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(100%);
+            opacity: 0;
+          }
+        }
+      `}</style>
     </div>
   );
 }
