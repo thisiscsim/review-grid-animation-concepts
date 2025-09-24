@@ -191,12 +191,12 @@ const columns = [
     cell: ({ getValue }) => {
       const value = getValue();
       return (
-        <span 
-          className='block truncate'
-          style={{ color: value === 'No information' ? '#706D66' : 'inherit' }}
-        >
-          {value}
-        </span>
+                <span
+                  className='block truncate'
+                  style={{ color: value === 'No information' ? '#706D66' : 'inherit' }}
+                >
+                  {value}
+                </span>
       );
     },
   }),
@@ -350,7 +350,11 @@ export default function DocumentTable1() {
                     className={`px-3 h-8 text-left font-medium ${
                       header.id === 'select' ? 'w-[48px]' : ''
                     } ${header.id === 'forceMajeureClause' ? 'w-[250px]' : ''} ${header.id === 'agreementParties' ? 'w-[280px]' : ''} ${header.id === 'assignmentProvisionSummary' ? 'w-[280px]' : ''} ${header.index !== 0 ? 'border-l border-[#ECEBE9]' : ''} border-b border-[#ECEBE9]`}
-                    style={{ fontSize: '12px', lineHeight: '16px', color: '#514E48' }}
+                    style={{
+                      fontSize: '12px',
+                      lineHeight: '16px',
+                      color: '#514E48',
+                    }}
                   >
                     {header.isPlaceholder
                       ? null
