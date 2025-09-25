@@ -10,10 +10,10 @@ export function TopNav() {
   
   const TABS = [
     { label: 'Gradient', href: '/' },
-    { label: 'Looping', href: '/animation-2' },
-    { label: 'Streaming', href: '/animation-3' },
-    { label: 'Reviewing', href: '/animation-4' },
-    { label: 'Multiplayer', href: '/animation-5' },
+    { label: 'Looping', href: '/looping' },
+    { label: 'Streaming', href: '/streaming' },
+    { label: 'Reviewing', href: '/reviewing' },
+    { label: 'Multiplayer', href: '/multiplayer' },
   ];
 
   // Find the active tab based on current pathname
