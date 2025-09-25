@@ -343,9 +343,9 @@ const columns = [
   }),
   columnHelper.accessor('forceMajeureClause', {
     header: () => (
-      <div className='flex items-center gap-1'>
+      <div className='flex items-center gap-1 overflow-hidden'>
         <SelectionIcon />
-        <span>Force Majeure Clause Reference</span>
+        <span className='truncate min-w-0'>Force Majeure Clause Reference</span>
       </div>
     ),
     size: 250,

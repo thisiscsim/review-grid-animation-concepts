@@ -1,11 +1,5 @@
-import DocumentTable from '@/components/DocumentTable';
+import DocumentTable1 from '@/components/DocumentTable1';
 
 export default function Home() {
-  return (
-    <main className='min-h-screen bg-white p-8'>
-      <div className='mx-auto max-w-7xl'>
-        <DocumentTable />
-      </div>
-    </main>
-  );
+  return <DocumentTable1 />;
 }

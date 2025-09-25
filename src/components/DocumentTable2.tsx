@@ -294,12 +294,12 @@ export default function DocumentTable2() {
       ),
     }),
     columnHelper.accessor('forceMajeureClause', {
-      header: () => (
-        <div className='flex items-center gap-1'>
-          <SelectionIcon />
-          <span>Force Majeure Clause Reference</span>
-        </div>
-      ),
+    header: () => (
+      <div className='flex items-center gap-1 overflow-hidden'>
+        <SelectionIcon />
+        <span className='truncate min-w-0'>Force Majeure Clause Reference</span>
+      </div>
+    ),
       size: 250,
       cell: ({ getValue, row }) => (
         <AnimatedCell 
